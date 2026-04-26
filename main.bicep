@@ -4,7 +4,7 @@ param appName string = 'fn-clima-${uniqueString(resourceGroup().id)}'
 @secure()
 param weatherApiKey string
 
-// 1. Conta de Armazenamento (Necessária para a Function)
+// Storage Account - Standard LRS é o mais barato e comum
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: 'st${uniqueString(resourceGroup().id)}'
   location: location
@@ -12,17 +12,21 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   kind: 'StorageV2'
 }
 
+// Plano de Consumo Linux (Y1) - O verdadeiro Serverless
 resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: 'plan-${appName}'
   location: location
+  kind: 'linux'
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
   }
-  properties: {}
+  properties: {
+    reserved: true // Obrigatório para Linux
+  }
 }
 
-// 3. A Function App configurada para o Plano B1
+// Function App
 resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   name: appName
   location: location
@@ -42,5 +46,4 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   }
 }
 
-// Output para o GitHub Actions saber o nome da app
 output appName string = functionApp.name
