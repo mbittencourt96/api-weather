@@ -2,7 +2,7 @@ name: Deploy Clima API
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   infra-and-deploy:
