@@ -12,18 +12,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   kind: 'StorageV2'
 }
 
-// 2. Plano App Service B1 (Dedicado)
 resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: 'plan-${appName}'
   location: location
-  kind: 'linux'
   sku: {
-    name: 'B1'
-    tier: 'Basic'
+    name: 'Y1'
+    tier: 'Dynamic'
   }
-  properties: {
-    reserved: true // Necessário para Linux
-  }
+  properties: {}
 }
 
 // 3. A Function App configurada para o Plano B1
