@@ -19,7 +19,7 @@ jobs:
         uses: azure/arm-deploy@v1
         id: deploy_infra
         with:
-          resourceGroupName: 'rg-projeto-clima'
+          resourceGroupName: 'rg-projeto-clima-v2'
           template: ./main.bicep
           parameters: weatherApiKey=${{ secrets.OPENWEATHER_API_KEY }}
 
