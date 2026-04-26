@@ -20,3 +20,4 @@ jobs:
         with:
           resourceGroupName: 'rg-projeto-clima'
           template: ./main.bicep
+          parameters: weatherApiKey=${{ secrets.OPENWEATHER_API_KEY }}

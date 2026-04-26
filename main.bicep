@@ -1,5 +1,7 @@
 param location string = resourceGroup().location
 param appName string = 'fn-clima-${uniqueString(resourceGroup().id)}'
+@secure() // Isso impede que o valor apareça nos logs da Azure
+param weatherApiKey string
 
 // 1. Conta de Armazenamento (Necessária para a Function)
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
@@ -29,7 +31,7 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
         { name: 'AzureWebJobsStorage', value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}' }
         { name: 'FUNCTIONS_EXTENSION_VERSION', value: '~4' }
         { name: 'FUNCTIONS_WORKER_RUNTIME', value: 'python' }
-        { name: 'OPENWEATHER_KEY', value: 'SUA_CHAVE_AQUI' } // Veremos como proteger isso depois!
+        { name: 'OPENWEATHER_KEY', value: weatherApiKey } // Veremos como proteger isso depois!
       ]
     }
   }
