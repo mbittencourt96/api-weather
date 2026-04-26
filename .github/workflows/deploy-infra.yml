@@ -1,11 +1,11 @@
-name: Deploy Infra e Code
+name: Deploy Clima API
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  infra-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,7 +17,23 @@ jobs:
 
       - name: 'Deploy da Infra (Bicep)'
         uses: azure/arm-deploy@v1
+        id: deploy_infra
         with:
           resourceGroupName: 'rg-projeto-clima'
           template: ./main.bicep
           parameters: weatherApiKey=${{ secrets.OPENWEATHER_API_KEY }}
+
+      - name: 'Configurar Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 'Instalar Dependências'
+        run: |
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+
+      - name: 'Deploy do Código da Function'
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ steps.deploy_infra.outputs.appName }} # Pega o nome gerado pelo Bicep
+          package: '.'
