@@ -5,31 +5,6 @@ on:
     branches: [ main, master ] # Aceita qualquer uma das duas
 
 jobs:
-  deploy-code:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: 'Login na Azure'
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: 'Configurar Python'
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: 'Instalar Dependências'
-        run: |
-          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
-
-      - name: 'Deploy para Azure Functions'
-        uses: Azure/functions-action@v1
-        with:
-          app-name: 'api-clima-mari-projeto'
-          package: '.'
-  
   build_and_deploy_job:
       runs-on: ubuntu-latest
       name: Build and Deploy Job
