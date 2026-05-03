@@ -29,3 +29,24 @@ jobs:
         with:
           app-name: 'api-clima-mari-projeto'
           package: '.'
+  
+  build_and_deploy_job:
+      runs-on: ubuntu-latest
+      name: Build and Deploy Job
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            submodules: true
+
+        - name: Build And Deploy
+          id: builddeploy
+          uses: Azure/static-web-apps-deploy@v1
+          with:
+            azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
+            action: "upload"
+            
+            ###### Configurações de Localização ######
+            app_location: "/web"          # Onde está o seu projeto React
+            api_location: "/api"          # Onde está sua Azure Function
+            output_location: "dist"       # Pasta gerada pelo comando 'npm run build' do Vite
