@@ -7,6 +7,16 @@ const WeatherWidget = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const translateCondition = (condicao) => {
+  const c = condicao.toLowerCase();
+  if (c.includes('céu limpo') || c.includes('sol')) return 'Clear';
+  if (c.includes('chuva')) return 'Rain';
+  if (c.includes('nuvens') || c.includes('nublado')) return 'Clouds';
+  if (c.includes('tempestade')) return 'Thunderstorm';
+  if (c.includes('neve')) return 'Snow';
+  return 'Clear'; // padrão
+};
+
   // Mapeia a condição da API para ícones e animações específicas
   const getWeatherDetails = (condition) => {
     const style = "w-20 h-20 transition-all duration-700 ease-in-out";
@@ -33,27 +43,25 @@ const WeatherWidget = () => {
     setLoading(true);
     setError(null);
     
-    try {
-      // Chamada para a sua Azure Function migrada para o Static Web App
+   try {
       const response = await fetch(`/api/clima?city=${city}`);
       
-      if (!response.ok) throw new Error('Cidade não encontrada');
+      if (!response.ok) throw new Error('Erro na API');
       
       const data = await response.json();
       
       setWeather({
         name: data.cidade,
-        temp: Math.round(data.temperatura),
-        condition: data.weather[0].main,
-        humidity: data.umidade,
-        wind: Math.round(data.vento * 3.6), // Convertendo m/s para km/h
-        description: data.weather[0].descricao
+        // Remove o "°C" se o Python já estiver enviando, para o widget não duplicar
+        temp: data.temperatura,
+        condition: translateCondition(data.condicao), 
+        humidity: data.umidade || "--", 
+        wind: data.vento || "--",        
+        description: data.descricao
       });
     } catch (err) {
-      setError("Ops! Não conseguimos encontrar essa cidade.");
+      setError("Cidade não encontrada ou erro no servidor.");
       setWeather(null);
-    } finally {
-      setLoading(false);
     }
   };
 

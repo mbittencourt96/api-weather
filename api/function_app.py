@@ -29,7 +29,7 @@ def GetWeather(req: func.HttpRequest) -> func.HttpResponse:
 
         result = {
             "cidade": city,
-            "temperatura": f"{temp}°C",
+            "temperatura": temp,
             "condicao": desc,
             "umidade": data['main']['humidity'],
             "vento": data['wind']['speed'],
