@@ -9,7 +9,7 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 def GetWeather(req: func.HttpRequest) -> func.HttpResponse:
     city = req.params.get('city')
     # No futuro, essa chave virá do Azure Key Vault
-    api_key = os.environ.get("OPENWEATHER_KEY")
+    api_key = os.environ.get("OPENWEATHER_API_KEY")
     
     if not city:
         return func.HttpResponse("Por favor, passe o nome de uma cidade. Ex: ?city=Curitiba", status_code=400)
@@ -31,6 +31,9 @@ def GetWeather(req: func.HttpRequest) -> func.HttpResponse:
             "cidade": city,
             "temperatura": f"{temp}°C",
             "condicao": desc,
+            "umidade": data['main']['humidity'],
+            "vento": data['wind']['speed'],
+            "descricao": desc,
             "dica": message
         }
         

@@ -35,19 +35,19 @@ const WeatherWidget = () => {
     
     try {
       // Chamada para a sua Azure Function migrada para o Static Web App
-      const response = await fetch(`/api/GetWeather?city=${city}`);
+      const response = await fetch(`/api/clima?city=${city}`);
       
       if (!response.ok) throw new Error('Cidade não encontrada');
       
       const data = await response.json();
       
       setWeather({
-        name: data.name,
-        temp: Math.round(data.main.temp),
+        name: data.cidade,
+        temp: Math.round(data.temperatura),
         condition: data.weather[0].main,
-        humidity: data.main.humidity,
-        wind: Math.round(data.wind.speed * 3.6), // Convertendo m/s para km/h
-        description: data.weather[0].description
+        humidity: data.umidade,
+        wind: Math.round(data.vento * 3.6), // Convertendo m/s para km/h
+        description: data.weather[0].descricao
       });
     } catch (err) {
       setError("Ops! Não conseguimos encontrar essa cidade.");
